@@ -10,7 +10,7 @@ import fs from 'fs';
         api_secret: process.env.CLOUDINARY_API_SECRET // Click 'View API Keys' above to copy your API secret
     });
 
-    const uploadOnCLoudinary = async (localfilepath)=>{
+    const uploadOnCloudinary = async (localfilepath)=>{
 
         if(!localfilepath)return null;
         try {
@@ -33,4 +33,6 @@ import fs from 'fs';
 
     }
 }
+
 })
+export {uploadOnCloudinary}
