@@ -46,7 +46,7 @@ router.route("/update-account").patch(verifyJWT,UpdateAccountDetail)
 
 router.route("/avatar").patch(verifyJWT,upload.single("avatar"),UpdateUserAvatar)
 
-router.route("/cover-image").patch(verifyJWT,upload.single("/coverImage"),UpdateUserCoverImage)
+router.route("/cover-image").patch(verifyJWT,upload.single("coverImage"),UpdateUserCoverImage)
 
 router.route("/c/:username").get(verifyJWT,GetUserChannelProfile)
 
