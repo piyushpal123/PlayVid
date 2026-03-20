@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import {
-    deleteVideo,
-    getAllVideos,
-    getVideoById,
-    publishAVideo,
+   getAllvedios,
+    publishAvedio,
+    getvedioById,
+    updatevedio,
+    deleteVedio,
     togglePublishStatus,
-    updateVideo,
-} from "../controllers/video.controller.js"
+} from "../controllers/vedio.controller.js"
 import {verifyJWT} from "../middlewares/auth.middleware.js"
 import {upload} from "../middlewares/multer.middleware.js"
 
@@ -15,7 +15,7 @@ router.use(verifyJWT); // Apply verifyJWT middleware to all routes in this file
 
 router
     .route("/")
-    .get(getAllVideos)
+    .get(getAllvedios)
     .post(
         upload.fields([
             {
@@ -28,15 +28,15 @@ router
             },
             
         ]),
-        publishAVideo
+        publishAvedio
     );
 
 router
     .route("/:videoId")
-    .get(getVideoById)
-    .delete(deleteVideo)
-    .patch(upload.single("thumbnail"), updateVideo);
+    .get(getvedioById)
+    .delete(deleteVedio)
+    .patch(upload.single("thumbnail"), updatevedio);
 
-router.route("/toggle/publish/:videoId").patch(togglePublishStatus);
+router.route("/toggle/publish/:vedioId").patch(togglePublishStatus);
 
 export default router

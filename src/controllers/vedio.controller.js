@@ -1,11 +1,11 @@
 import mongoose, {isValidObjectId} from "mongoose"
-import {vedio} from "../models/vedio.model.js"
+import {Vedio} from "../models/vedio.model.js"
 import {User} from "../models/user.model.js"
 import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 import {uploadOnCloudinary,deleteOnCloudinary} from "../utils/Cloudinary.js"
-import { Vedio } from "../models/vedio.model"
+
 
 
 const getAllvedios = asyncHandler(async (req, res) => {
