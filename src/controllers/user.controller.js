@@ -3,6 +3,8 @@
     import {User} from '../models/user.model.js'
     import { uploadOnCloudinary } from '../utils/Cloudinary.js'
     import { ApiResponse } from '../utils/ApiResponse.js'
+    import jwt from "jsonwebtoken";
+    
 
 
     const generateAccessTokenAndRefreshToken = async(userId)=>{
@@ -39,7 +41,7 @@
 
          if(
             [fullname,email,username,password].some((feild)=>
-            feild?.trim()=="")
+            feild?.trim()==="")
          ){
             throw  new ApiError(400, "All feilds is required")
 
@@ -156,7 +158,7 @@
     const logoutUser = asyncHandler(async(req,res)=> 
       {
 
-         User.findByIdAndUpdate(
+        await  User.findByIdAndUpdate(
 
            req.user. _id,
            {
@@ -213,9 +215,9 @@
     const {accessToken , newRefreshToken} =   await generateAccessTokenAndRefreshToken(user._id);
 
       return res
-      .status()
+      .status(200)
       .cookie("accessToken",accessToken,options)
-      .cokokie("refreshToken",newRefreshToken)
+      .cookie("refreshToken",newRefreshToken)
       .json(
          
             new ApiResponse(
@@ -266,20 +268,20 @@
     const getCurrentUser = asyncHandler(async(req,res)=>{
       return res
       .status(200)
-      .json(200,req.user,"current user fetched successfully")
+      .json(new ApiResponse(200, req.user, "current user fetched successfully"))
     })
 
     const UpdateAccountDetail = asyncHandler(async(req,res)=>{
-      const  {fullName, email } = req.body
+      const  {fullname, email } = req.body
 
-      if(!(fullName|| email)){
+      if(!(fullname|| email)){
          throw new ApiError(400, "all feild is required")
       }
-         const user =  User.findByIdAndUpdate(
+         const user = await  User.findByIdAndUpdate(
             req.user?._id,
             {
                $set:{
-                  fullName :fullName,
+                  fullname :fullname,
                   email : email
                }
 
@@ -307,7 +309,7 @@
              }
 
           const user =   await User.findOneAndUpdate(
-               req.User?._id,
+               req.user?._id,
                {
                   $set:{
                      avatar :avatar.url
@@ -317,7 +319,7 @@
 
              return  res
              .status(200)
-             .json(new ApiResponse(200,ser,"AvatarUpdate successfully"))
+             .json(new ApiResponse(200,user,"AvatarUpdate successfully"))
             
 
 
@@ -335,7 +337,7 @@
                throw new ApiError(400,"error while uploading on CoverImage ")
              }
 
-          const user =   await User.findOneAndUpdate(
+          const user =   await User.findOneAndReplace(
                req.User?._id,
                {
                   $set:{

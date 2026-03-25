@@ -8,7 +8,10 @@ export const verifyJWT = asyncHandler(async(req,_,next)=>{
 
   try {
      const token =  req.cookies?.accessToken|| req.header 
-      ("Authorization")?.replace("Bearer","")
+      ("Authorization")?.replace("Bearer ","")
+            // console.log("req.cokkies check ",req.cookies)
+
+      // console.log("check token :",token)
   
       if(!token){
           throw new ApiError(401,"Unauthorized request")
@@ -27,7 +30,7 @@ export const verifyJWT = asyncHandler(async(req,_,next)=>{
      next()
   } catch (error) {
 
-    throw new ApiError(401 ,"Invlaid Access Token")
+    throw new ApiError(401 ,"Invlaid access Token")
     
   }
 })

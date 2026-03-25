@@ -4,11 +4,17 @@ import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 const vedioSchema = new Schema( 
     {
         VedioFile:{
-            type:String,// cloudinary url
+            type: {
+                url: String,
+                public_id: String,
+            },// cloudinary url
             required:true,
         },
         thumbnail:{
-            type:String, // cloudinary url
+            type: {
+                url: String,
+                public_id: String,
+            }, // cloudinary url
             required:true,
         },
         title:{

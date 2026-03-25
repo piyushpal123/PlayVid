@@ -19,7 +19,7 @@ router
     .post(
         upload.fields([
             {
-                name: "videoFile",
+                name: "vedioFile",
                 maxCount: 1,
             },
             {
@@ -32,7 +32,7 @@ router
     );
 
 router
-    .route("/:videoId")
+    .route("/:vedioId")
     .get(getvedioById)
     .delete(deleteVedio)
     .patch(upload.single("thumbnail"), updatevedio);

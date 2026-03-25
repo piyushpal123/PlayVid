@@ -119,11 +119,11 @@ const getAllvedios = asyncHandler(async (req, res) => {
 const publishAvedio = asyncHandler(async (req, res) => {
     const { title, description} = req.body
     // TODO: get vedio, upload to cloudinary, create vedio
-    if(["title","description"].some((feild)=>feild.trim()=="")){
+    if(["title","description"].some((feild)=>!feild || feild.trim()=="")){
         throw  new ApiError(400,"All feild is required")
     }
-    const vedioFileLocalPath = req.files?.vedioFile[0].path
-    const ThumbnailLocalPath = req.files?.thumbnail[0].path
+    const vedioFileLocalPath = req.files?.vedioFile?.[0]?.path
+    const ThumbnailLocalPath = req.files?.thumbnail?.[0]?.path
 
     if(!vedioFileLocalPath){
         throw new ApiError(400,"VedioFileLocalPath is required")
@@ -144,10 +144,8 @@ const publishAvedio = asyncHandler(async (req, res) => {
    // save on database
    const vedio =  await  Vedio.create(
         {
-            title,
-            description,
-            duration:vedioFile.duration,
-        vedioFile: {
+            
+        VedioFile: {
             url: vedioFile.url,
             public_id: vedioFile.public_id
              },
@@ -156,6 +154,9 @@ const publishAvedio = asyncHandler(async (req, res) => {
             url: thumbnail.url,
             public_id: thumbnail.public_id
         },
+        title,
+            description,
+            duration:vedioFile.duration,
         owner:req.user?._id,
         isPublished:false,
 
@@ -169,7 +170,7 @@ const publishAvedio = asyncHandler(async (req, res) => {
      }
      return res
         .status(200)
-        .json(new ApiResponse(200, vedio, "vedio uploaded successfully"));
+        .json(new ApiResponse(200, vedioUploaded, "vedio uploaded successfully"));
 })
 
 const getvedioById = asyncHandler(async (req, res) => {
@@ -346,7 +347,7 @@ const updatevedio = asyncHandler(async (req, res) => {
         vedioId,
         {
         $set:{
-            title,
+        title,
         description,
         thumbnail:{
              public_id: thumbnail.public_id,
