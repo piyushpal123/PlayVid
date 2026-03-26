@@ -157,8 +157,10 @@ const publishAvedio = asyncHandler(async (req, res) => {
         title,
             description,
             duration:vedioFile.duration,
-        owner:req.user?._id,
-        isPublished:false,
+
+        Owner:req.user?._id,
+
+        IsPublished:false,
 
         }
      )
@@ -191,7 +193,7 @@ const getvedioById = asyncHandler(async (req, res) => {
     {
         $lookup:{
             from:"likes",
-            localField:_id,
+            localField:"_id",
             foreignField:"vedio",
             as:"likes"
         }
@@ -253,7 +255,7 @@ const getvedioById = asyncHandler(async (req, res) => {
                 $first:$owner
             },
             isLiked:{
-                cond:{
+                $cond:{
                     if:{$in:[req.user?.id,"$likes.likeBy"]},
                     then:true,
                     else:false
@@ -288,7 +290,7 @@ const getvedioById = asyncHandler(async (req, res) => {
 // increase views of vedio 
   await Vedio.findByIdAndUpdate(vedioId,
    { $inc:{
-        veiws:1,
+        views:1,
     }}
   )
   // add the user watch history 
@@ -320,16 +322,20 @@ const updatevedio = asyncHandler(async (req, res) => {
     if(!(title && description )){
         throw new ApiError(400,"title and description is required")
     }
+    
+   
      const vedio = await Vedio.findById(vedioId)
 
      if(!vedio){
         throw new ApiError(400,"vedio not found")
      }
-
-     if(vedio?.owner.toString() !== req.user?._id.toString()){
-        throw new ApiError(400,"you can edit vedio as you are not the owner")
-     }
-
+     
+     
+     if(vedio?.Owner.toString() !== req.user?._id.toString()){
+         throw new ApiError(400,"you can edit vedio as you are not the owner")
+        }
+    console.log(vedio)
+        
      const thumbnailToDelete = vedio?.thumbnail?.public_id;
 
     const thumbnailLocalPath = req.file?.path
@@ -372,37 +378,47 @@ const updatevedio = asyncHandler(async (req, res) => {
 })
 
 const deleteVedio = asyncHandler(async (req, res) => {
-    const { vedioId } = req.params
+    const { vedioId } = req.params;
     //TODO: delete vedio 
     if(!isValidObjectId(vedioId)){
         throw new ApiError(400,"Invalid VedioId")
     }
-
-    const vedio = await Vedio.findById(vedioId)
-    if(vedio?._id.toString()!==req.user?._id.toString()){
-            throw new ApiError(400,"you cant delete vedio beacuse you are not the owner")
-    }
-
-     const vedioDeleted = await vedio.findByIdAndDelete(vedio?._id);
-
-    if (!vedioDeleted) {
-        throw new ApiError(400, "Failed to delete the vedio please try again");
-    }
-
-     await deleteOnCloudinary(vedio.thumbnail.public_id); // vedio model has thumbnail public_id stored in it->check vedioModel
-    await deleteOnCloudinary(vedio.vedioFile.public_id, "vedio"); // specify vedio while deletingvedio
-
-           // delete vedio likes
-    await Like.deleteMany({
-        vedio: vedioId
-    })
-
-     // delete vedio comments
-    await Comment.deleteMany({
-        vedio: vedioId,
-    })
     
-    return res
+    const vedio = await Vedio.findById(vedioId)
+    if(!vedio){
+        throw new ApiError(400,"vedio is not found")
+    }
+    
+    console.log(vedio)
+    // console.log("owner:",vedio.owner);
+    // console.log("user:", req.user._id);
+    //     if (!vedio.Owner.equals(req.user._id)) {
+        //     throw new ApiError(403, "Not authorized");
+        // }
+        
+        const vedioDeleted = await Vedio.findByIdAndDelete(vedio?._id);
+    
+        
+        if (!vedioDeleted) {
+            throw new ApiError(400, "Failed to delete the vedio please try again");
+        }
+        
+        
+        await deleteOnCloudinary(vedio.thumbnail.public_id); // vedio model has thumbnail public_id stored in it->check vedioModel
+      
+        // await deleteOnCloudinary(vedio.vedioFile.public_id, "vedio"); // specify vedio while deletingvedio
+        
+        // delete vedio likes
+        await Like.deleteMany({
+            vedio: vedioId
+        })
+        
+        // delete vedio comments
+        await Comment.deleteMany({
+            vedio: vedioId,
+        })
+               
+        return res
         .status(200)
         .json(new ApiResponse(200, {}, "vedio deleted successfully"));
 })
@@ -417,10 +433,9 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     if(!vedio){
         throw new ApiError(400,"vedio is invalid")
     }
-
-    if(vedio?.vedioId.toString()!==req.user?._id){
-        throw new ApiError(400, " you are not the owner so you can't togglepublish vedio")
-    }
+if (!vedio.Owner.equals(req.user._id)) {
+    throw new ApiError(403, "Not authorized");
+}
 
       const toggleVedioPublish =   await Vedio.findByIdAndUpdate(vedioId,
         {

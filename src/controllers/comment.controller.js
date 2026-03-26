@@ -105,17 +105,20 @@ const addComment = asyncHandler(async (req, res) => {
     }
 
     const vedio = Vedio.findById(vedioId)
+
     if(!vedio){
         throw new ApiError(400,"vedio is not found")
     }
+    
     const comment = await Comment.create({
          content,
-        video: videoId,
+        vedio: vedioId,
         owner: req.user?._id
     })
     if (!comment) {
         throw new ApiError(500, "Failed to add comment please try again");
     }
+   
 
     return res
         .status(201)
