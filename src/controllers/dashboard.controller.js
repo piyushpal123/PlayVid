@@ -69,9 +69,9 @@ const getChannelStats = asyncHandler(async (req, res) => {
 
   const channelStats = {
         totalSubscribers: totalSubscriber[0]?.subscribersCount || 0,
-        totalLikes: video[0]?.totalLikes || 0,
-        totalViews: video[0]?.totalViews || 0,
-        totalVideos: video[0]?.totalVideos || 0
+        totalLikes: vedio[0]?.totalLikes || 0,
+        totalViews: vedio[0]?.totalViews || 0,
+        totalVedios: vedio[0]?.totalVedios || 0
     };
 
     return res

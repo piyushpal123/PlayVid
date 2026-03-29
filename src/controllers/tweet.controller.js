@@ -23,7 +23,7 @@ const createTweet = asyncHandler(async (req, res) => {
 
     res
     .status(200)
-    .json(new ApiResponse(200,"api is created successfully"))
+    .json(new ApiResponse(200, tweet,"tweet is created successfully"))
 })
 
 const getUserTweets = asyncHandler(async (req, res) => {
@@ -112,7 +112,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
 const updateTweet = asyncHandler(async (req, res) => {
     //TODO: update tweet
     const {content} = req.body
-    const {tweetId} = req.params
+    const {tweetId} = req.query
 
      if (!content) {
         throw new ApiError(400, "content is required");
@@ -160,7 +160,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
         throw new ApiError(400,"Invalid UserId");
     }
 
-    const tweet = await tweet.findById(userId);
+    const tweet = await Tweet.findById(userId);
       if (tweet?.owner.toString() !== req.user?._id.toString()) {
         throw new ApiError(400, "only owner can delete thier tweet");
     }
@@ -168,7 +168,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
 
     return res
     .status(200)
-    .json(200,{tweetId},"tweet deleted successfully")
+    .json(200,"tweet deleted successfully")
      
 
 

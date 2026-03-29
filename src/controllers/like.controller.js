@@ -4,14 +4,14 @@ import {ApiError} from "../utils/ApiError.js"
 import {ApiResponse} from "../utils/ApiResponse.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
-const toggleVideoLike = asyncHandler(async (req, res) => {
+const toggleVedioLike = asyncHandler(async (req, res) => {
     const {vedioId} = req.params
 
     if(!isValidObjectId(vedioId)){
         throw new ApiError(400,"Invalid vedio id")
     }
        const likedAlready =  await Like.findOne({
-            video: videoId,
+            vedio: vedioId,
         likedBy: req.user?._id,
         })
 
@@ -24,7 +24,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
     }
 
        await Like.create({
-        video: videoId,
+        vedio: vedioId,
         likedBy: req.user?._id,
     });
      return res
@@ -100,7 +100,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 }
 )
 
-const getLikedVideos = asyncHandler(async (req, res) => {
+const getLikedVedios = asyncHandler(async (req, res) => {
     //TODO: get all liked videos
      const likedVediosAggegate = await Like.aggregate([
         {
@@ -175,6 +175,6 @@ const getLikedVideos = asyncHandler(async (req, res) => {
 export {
     toggleCommentLike,
     toggleTweetLike,
-    toggleVideoLike,
-    getLikedVideos
+    toggleVedioLike,
+    getLikedVedios
 }

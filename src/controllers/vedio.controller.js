@@ -208,7 +208,7 @@ const getvedioById = asyncHandler(async (req, res) => {
                 {
                 $lookup:{
                     from:"subscriptions",
-                    localfield:"_id",
+                    localField:"_id",
                     foreignField:"channel",
                     as:"subscribers"
 
@@ -252,7 +252,7 @@ const getvedioById = asyncHandler(async (req, res) => {
                 $size :"$likes"
             },
             owner:{
-                $first:$owner
+                $first:"$owner"
             },
             isLiked:{
                 $cond:{
